@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+<!--    <link rel="stylesheet" href="//unpkg.com/element-plus/dist/index.css" />-->
+<!--    &lt;!&ndash; Import Vue 3 &ndash;&gt;-->
+<!--    <script src="//unpkg.com/vue@3"></script>-->
+<!--    &lt;!&ndash; Import component library &ndash;&gt;-->
+<!--    <script src="//unpkg.com/element-plus"></script>-->
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <title>Title</title>
+    <style>
+
+        #info{
+            width: 300px;
+            height: 200px;
+        }
+        img
+        {
+            width: 100px;
+            height: 100px;
+            border-radius: 100%;
+            margin-top: 20px;
+            margin-left: 30%;
+        }
+        #info div
+        {
+            text-align: center;
+        }
+
+    </style>
+</head>
+<body>
+<div id="in">
+<div id="header">
+    <div id="info">
+        <img id="tu" src="">
+        <br>
+        <div id="name"></div>
+        <div id="zhi"></div>
+    </div>
+</div>
+</div>
+
+<script>
+    window.onload=function(){
+        const eid=sessionStorage.eid;
+                let params = new URLSearchParams();
+                params.append("eid",eid);
+                axios({
+                    method:"post",
+                    url:"/api/InfoServlet",
+                    data:params
+                }).then(function(response){
+                    let json=response.data;
+                    let im=document.getElementById("tu");
+                    let name=document.getElementById("name");
+                    let zhi=document.getElementById("zhi");
+                    console.log(json.map.img+":"+json.map.name)
+                    im.setAttribute("src",json.map.employee.img);
+                    name.innerText=json.map.employee.name;
+                    zhi.innerText=json.map.employee.title;
+                });
+    }
+    // const Main={
+    //     mounted()
+    //     {
+    //         const eid=sessionStorage.eid;
+    //         let params = new URLSearchParams();
+    //         params.append("eid",eid);
+    //         axios({
+    //             method:"post",
+    //             url:"/api/InfoServlet",
+    //             data:params
+    //         }).then(function(response){
+    //             let json=response.data;
+    //             let im=document.getElementById("tu");
+    //             let name=document.getElementById("name");
+    //             let zhi=document.getElementById("zhi");
+    //             im.src=json.map.img;
+    //             name.innerText=json.map.name;
+    //             zhi.innerText=json.map.title;
+    //         });
+    //
+    //
+    //     }
+    // };
+    // const app=Vue.createApp(Main);
+    // app.use(ElementPlus);
+    // app.mount("#in");
+</script>
+</body>
+</html>
