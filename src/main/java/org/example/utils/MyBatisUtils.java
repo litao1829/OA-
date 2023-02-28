@@ -36,6 +36,7 @@ public class MyBatisUtils {
         SqlSession sqlSession=null;
         try {
             sqlSession=sqlSessionFactory.openSession(false);
+            //apply(T t)输入参数对象t,并执行计算t对象的操作
             Object o = fun.apply(sqlSession);
 
             //手动提交事务

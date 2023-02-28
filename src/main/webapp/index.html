@@ -2,92 +2,144 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-<!--    <link rel="stylesheet" href="//unpkg.com/element-plus/dist/index.css" />-->
-<!--    &lt;!&ndash; Import Vue 3 &ndash;&gt;-->
-<!--    <script src="//unpkg.com/vue@3"></script>-->
-<!--    &lt;!&ndash; Import component library &ndash;&gt;-->
-<!--    <script src="//unpkg.com/element-plus"></script>-->
-    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <link rel="stylesheet" href="//unpkg.com/element-plus/dist/index.css" />
+    <!-- Import Vue 3 -->
+    <script src="//unpkg.com/vue@3"></script>
+    <!-- Import component library -->
+    <script src="//unpkg.com/element-plus"></script>
     <title>Title</title>
     <style>
-
-        #info{
-            width: 300px;
-            height: 200px;
+        html,body,#in,.el-container{
+            padding: 0;
+            margin: 0;
+            height: 100%;
+            max-height: 100%;
         }
-        img
+        .el-header
         {
-            width: 100px;
-            height: 100px;
-            border-radius: 100%;
+            background-color: aquamarine;
+            color: white;
+            height: 70px;
+            line-height: 70px;
+        }
+        .title
+        {
+            font-size: 22px;
+            font-weight: bold;
+        }
+        .info
+        {
             margin-top: 20px;
-            margin-left: 30%;
+            margin-right: 15px;
+            color: white;
+            font-size: 16px;
         }
-        #info div
+        .main-frame
         {
-            text-align: center;
+            width: 100%;
+            height: 95%;
+            border: 0;
         }
-
     </style>
 </head>
 <body>
 <div id="in">
-<div id="header">
-    <div id="info">
-        <img id="tu" src="">
-        <br>
-        <div id="name"></div>
-        <div id="zhi"></div>
-    </div>
-</div>
+    <el-container>
+
+        <el-header>
+            <el-row>
+                <!--第一列-->
+                <el-col :span="8">
+                    <span class="title">OA办公系统</span>
+                </el-col>
+                <!--第二列-->
+                <el-col :span="11">
+
+                </el-col>
+                <!--第三 列-->
+                <el-col :span="5" style="padding-top: 5px">
+                    <el-dropdown>
+                        <span class="info">{{employee.name}}/{{department.departmentName}}/{{employee.title}}</span>
+                        <template #dropdown>
+                                <el-dropdown-menu>
+                                    <el-dropdown-item v-on:click="logout()">注销</el-dropdown-item>
+                                </el-dropdown-menu>
+                        </template>
+                    </el-dropdown>
+                    <el-avatar :src="employee.img" :size="45"></el-avatar>
+                </el-col>
+            </el-row>
+        </el-header>
+
+        <el-container>
+            <el-aside width="200px" style="max-height: 100%;background-color: rgb(238,241,246)">
+                <el-menu default-active="1">
+                    <el-sub-menu v-for="(n,idx) in nodelist" :index="idx.toString()">
+                        <template #title>
+                            <span>{{n.node.nodeName}}</span>
+                        </template>
+                        <el-menu-item v-for="child in n.child"
+                                      :index="child.nodeID"
+                                        v-on:click="showPage(child.url)">
+                            {{child.nodeName}}
+                        </el-menu-item>
+                    </el-sub-menu>
+                </el-menu>
+            </el-aside>
+
+            <el-main>
+                <iframe id="main" name="main" src="/notice.html" class="main-frame"></iframe>
+            </el-main>
+        </el-container>
+    </el-container>
 </div>
 
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script>
-    window.onload=function(){
-        const eid=sessionStorage.eid;
-                let params = new URLSearchParams();
-                params.append("eid",eid);
-                axios({
-                    method:"post",
-                    url:"/api/InfoServlet",
-                    data:params
-                }).then(function(response){
-                    let json=response.data;
-                    let im=document.getElementById("tu");
-                    let name=document.getElementById("name");
-                    let zhi=document.getElementById("zhi");
-                    console.log(json.map.img+":"+json.map.name)
-                    im.setAttribute("src",json.map.employee.img);
-                    name.innerText=json.map.employee.name;
-                    zhi.innerText=json.map.employee.title;
+    const Main={
+        data(){
+            return {
+                nodelist:[],
+                employee:{},
+                department:{}
+            }
+        },
+        methods:{
+            showPage(url){
+                document.getElementById("main").src=url;
+            },
+            logout(){
+                localStorage.clear();
+                window.location.href="/login.html";
+            }
+        },
+        mounted()
+        {
+            const eid=sessionStorage.eid;
+            const uid=sessionStorage.uid;
+            let params = new URLSearchParams();
+            params.append("eid",eid);
+            params.append("uid",uid);
+            axios({
+                method:"post",
+                url:"/api/InfoServlet",
+                data:params
+            }).then(response =>
+            {
+                const json=response.data;
+                json.map.lists.forEach( item =>{
+                    this.nodelist.push(item);
                 });
-    }
-    // const Main={
-    //     mounted()
-    //     {
-    //         const eid=sessionStorage.eid;
-    //         let params = new URLSearchParams();
-    //         params.append("eid",eid);
-    //         axios({
-    //             method:"post",
-    //             url:"/api/InfoServlet",
-    //             data:params
-    //         }).then(function(response){
-    //             let json=response.data;
-    //             let im=document.getElementById("tu");
-    //             let name=document.getElementById("name");
-    //             let zhi=document.getElementById("zhi");
-    //             im.src=json.map.img;
-    //             name.innerText=json.map.name;
-    //             zhi.innerText=json.map.title;
-    //         });
-    //
-    //
-    //     }
-    // };
-    // const app=Vue.createApp(Main);
-    // app.use(ElementPlus);
-    // app.mount("#in");
+                this.employee=json.map.employee;
+                this.department=json.map.department;
+            });
+
+
+        }
+    };
+    const app=Vue.createApp(Main);
+    app.use(ElementPlus);
+    app.mount("#in");
 </script>
 </body>
 </html>

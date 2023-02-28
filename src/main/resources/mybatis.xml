@@ -28,5 +28,7 @@
         <mapper resource="mappers/testmapper.xml"></mapper>
         <mapper resource="mappers/UserMapper.xml"></mapper>
         <mapper resource="mappers/EmpMapper.xml"></mapper>
+        <mapper resource="mappers/NodeMapper.xml"></mapper>
+        <mapper resource="mappers/DepartmentMapper.xml"></mapper>
     </mappers>
 </configuration>
