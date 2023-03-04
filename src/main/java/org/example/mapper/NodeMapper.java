@@ -9,6 +9,7 @@ public class NodeMapper {
 
     public List<Node> findAllNodeByUserid(long id)
     {
-        return  (List<Node>) MyBatisUtils.executeQuery(sqlSession -> sqlSession.selectList("nodemapper.selectbyuserid",id));
+        return  (List<Node>) MyBatisUtils.executeQuery(sqlSession ->
+                sqlSession.selectList("nodemapper.selectbyuserid",id));
     }
 }

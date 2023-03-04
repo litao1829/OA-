@@ -28,6 +28,7 @@ public class MyBatisUtils {
     {
         SqlSession sqlSession=sqlSessionFactory.openSession();
         Object o = fun.apply(sqlSession);
+        sqlSession.close();
         return o;
     }
 

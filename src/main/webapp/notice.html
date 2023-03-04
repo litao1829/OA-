@@ -3,8 +3,71 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <!-- Import style -->
+    <link rel="stylesheet" href="//unpkg.com/element-plus/dist/index.css" />
+    <!-- Import Vue 3 -->
+    <script src="//unpkg.com/vue@3"></script>
+    <!-- Import component library -->
+    <script src="//unpkg.com/element-plus"></script>
+
 </head>
 <body>
-<h1>index</h1>
+<div id="app">
+    <h2>系统通知</h2>
+    <el-table ref="singleTable" :data="tableData" highlight-current-row style="width: 100%">
+    <el-table-column property="index" label="序号" width="100"></el-table-column>
+        <el-table-column property="ctime" label="通知时间" width="180"></el-table-column>
+        <el-table-column property="content" label="内容通知" ></el-table-column>
+    </el-table>
+</div>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script>
+    const Main={
+        data(){
+            return{
+                tableData:[{
+                    index:"",
+                    ctime:"",
+                    content:""
+                }]
+            }
+        },
+        methods:{
+            convert(time){
+                const date = new Date(time) ;
+                let year = date.getFullYear().toString();
+                let month = date.getMonth()+1;
+                month = month < 10 ? month.toString().padStart(2,'0'):month.toString();
+                let day = date.getDate();
+                day = day < 10 ? day.toString().padStart(2,'0') : day.toString();
+                let hour = date.getHours();
+                hour = hour < 10 ? hour.toString().padStart(2,'0') : hour.toString();
+                let minute = date.getMinutes();
+                minute = minute < 10 ? minute.toString().padStart(2,'0') : minute.toString();
+                let second = date.getSeconds();
+                second = second < 10 ? second.toString( ).padStart(2,'0' ) : second.toString( );
+                return `${year}-${month}-${day}   ${hour}:${minute}:${second}`;
+            }
+        },
+        mounted(){
+            axios.get("/api/notice/ServletNotice?eid="+sessionStorage.eid)
+                .then(response=>{
+                    this.tableData.splice(0,this.tableData.length);
+                    const noticelist=response.data.map.list;
+                     noticelist.forEach((item,index)=>{
+                            item.ctime=this.convert(item.createTime);
+                            item.index=index+1;
+                            item.content=item.content;
+                            this.tableData.push(item);
+                    });
+            }).catch(function(error){
+                console.log(error);
+            });
+        }
+    };
+    const app=Vue.createApp(Main);
+    app.use(ElementPlus);
+    app.mount("#app");
+</script>
 </body>
 </html>

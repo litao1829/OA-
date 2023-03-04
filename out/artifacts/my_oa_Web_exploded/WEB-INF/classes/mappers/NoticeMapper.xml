@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.example.mapper.NoticeMapper">
+    <select id="selectByreceiveid" parameterType="long" resultType="org.example.entity.Notice">
+        select * from sys_notice
+        where receiver_id=#{value}
+        order by create_time DESC
+        limit 0,30
+    </select>
+    <insert id="insert" parameterType="org.example.entity.Notice"
+            useGeneratedKeys = "true" keyColumn = "notice_id" keyProperty = "noticeId">
+        insert into sys_notice values (null,#{receiverId},#{content},#{createTime})
+    </insert>
+</mapper>

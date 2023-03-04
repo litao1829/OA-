@@ -132,6 +132,8 @@
                 });
                 this.employee=json.map.employee;
                 this.department=json.map.department;
+                localStorage.setItem("employee",JSON.stringify(this.employee));
+                localStorage.setItem("department",JSON.stringify(this.department));
             });
 
 

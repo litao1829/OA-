@@ -5,4 +5,17 @@
 <select id="selectemployid" parameterType="long" resultType="org.example.entity.Employee">
     SELECT * from adm_employee where employee_id=${value}
 </select>
+    <select id="selectlead" parameterType="java.util.Map" resultType="org.example.entity.Employee">
+        select * from adm_employee where
+        1=1
+        <if test="departmentId!=null">
+            and department_id=#{departmentId}
+        </if>
+        <if test="level!=null">
+            and level=#{level}
+        </if>
+        <if test="title!=null">
+            and title=#{title}
+        </if>
+    </select>
 </mapper>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.example.mapper.ProcessflowMapper">
+    <insert id="insertProcess" parameterType="org.example.entity.ProcessFlow"
+            useGeneratedKeys="true" keyColumn="process_id" keyProperty="processId">
+        insert into adm_process_flow values (null,#{formId},#{operatorID},#{action},#{result},#{reason},#{createTime},#{auditTime},#{orderNo},#{state},#{isLast});
+    </insert>
+
+    <update id="update" parameterType="org.example.entity.ProcessFlow"
+            useGeneratedKeys="true" keyColumn="process_id" keyProperty="processId">
+        UPDATE adm_process_flow
+        SET form_id=#{formId},
+            operator_id = #{operatorID},
+            action=#{action},
+            result=#{result},
+            reason=#{reason},
+            create_time = #{createTime},
+            audit_time = #{auditTime},
+            order_no=#{orderNo},
+            state=#{state},
+            is_last=#{isLast}
+        WHERE process_id = #{processId}
+    </update>
+    <select id="selectByFormId" parameterType="long" resultType="org.example.entity.ProcessFlow">
+        select * from adm_process_flow where form_id=#{formId}
+    </select>
+
+    <select id="selectByParams" parameterType="java.util.Map"
+            resultType="java.util.LinkedHashMap">
+        select f.*,e.name,d.*
+        from adm_leave_form as f ,adm_process_flow as pf,adm_employee as e ,adm_department as d
+        where
+            f.form_id=pf.form_id
+            and f.employee_id=e.employee_id
+            and e.department_id=d.department_id
+            <if test="state!=null">
+            and pf.state=#{state}
+            </if>
+            <if test="operatorId!=null">
+            and pf.operator_id=#{operatorId}
+            </if>
+    </select>
+</mapper>
